@@ -1,0 +1,76 @@
+* modelling
+** ideas
+*** start computing AUCs
+*** potential bug with bce
+*** lstm
+*** attention
+*** representations of underlying sentences
+** to learn
+- context lib manager
+** experiments
+*** adam 
+2016-06-26 00:25:27,758|  DEBUG (dsl:transform_random_sample):  Sampling from 4217 datamaps
+2016-06-26 00:25:58,753|  DEBUG (dsl:transform_random_sample):  Sampling from 4217 datamaps
+At iteration 0, the test error was 3.28159173584 and auc was 0.459227540785
+At iteration 1000, the test error was 1.38418622372 and auc was 0.842815049504
+At iteration 2000, the test error was 0.768553778654 and auc was 0.945063583803
+At iteration 3000, the test error was 0.499178670825 and auc was 0.972865968462
+At iteration 4000, the test error was 0.314021830464 and auc was 0.991606493632
+At iteration 5000, the test error was 0.205275732061 and auc was 0.997046154083
+At iteration 6000, the test error was 0.147667111502 and auc was 0.998478472937
+At iteration 7000, the test error was 0.100207720741 and auc was 0.999401953603
+At iteration 8000, the test error was 0.0834153740299 and auc was 0.999652632073
+At iteration 9000, the test error was 0.06430495096 and auc was 0.999811835288
+At iteration 10000, the test error was 0.0466380792343 and auc was 0.999930571755
+At iteration 11000, the test error was 0.0352522726213 and auc was 0.999995409234
+At iteration 12000, the test error was 0.035510973888 and auc was 0.999865904305
+*** sgd @ 0.001
+2016-06-25 23:36:13,214|  DEBUG (dsl:transform_random_sample):  Sampling from 4217 datamaps
+At iteration 0, the test error was 3.06031756387 and auc was 0.475880059422
+At iteration 1000, the test error was 2.54191339589 and auc was 0.49637302813
+At iteration 2000, the test error was 2.37635251836 and auc was 0.515385316116
+At iteration 3000, the test error was 2.30644996754 and auc was 0.525839766203
+At iteration 4000, the test error was 2.27310637402 and auc was 0.559776400746
+At iteration 5000, the test error was 2.2486282717 and auc was 0.558737086048
+At iteration 6000, the test error was 2.2336097148 and auc was 0.560574278157
+At iteration 7000, the test error was 2.21559976985 and auc was 0.555208850485
+At iteration 8000, the test error was 2.19369997719 and auc was 0.560446887035
+At iteration 9000, the test error was 2.17193263438 and auc was 0.561376440146
+At iteration 10000, the test error was 2.16859063775 and auc was 0.561976581138
+At iteration 11000, the test error was 2.14666388454 and auc was 0.571288586483
+At iteration 12000, the test error was 2.14740636652 and auc was 0.577154199875
+At iteration 13000, the test error was 2.12350883217 and auc was 0.578559914144
+At iteration 14000, the test error was 2.11550955941 and auc was 0.573244928043
+At iteration 15000, the test error was 2.10149101444 and auc was 0.575092272144
+At iteration 16000, the test error was 2.09289518204 and auc was 0.574267240884
+At iteration 17000, the test error was 2.06690975613 and auc was 0.580261464364
+At iteration 18000, the test error was 2.0551525217 and auc was 0.588005669251
+At iteration 19000, the test error was 2.04809937245 and auc was 0.583812942167
+At iteration 20000, the test error was 2.0301938226 and auc was 0.584057381386
+At iteration 21000, the test error was 2.01418318054 and auc was 0.589858234895
+At iteration 22000, the test error was 2.00426702762 and auc was 0.595642632354
+At iteration 23000, the test error was 1.99592942983 and auc was 0.592888986479
+At iteration 24000, the test error was 1.96664067116 and auc was 0.595301949343
+At iteration 25000, the test error was 1.95046755506 and auc was 0.598535986373
+At iteration 26000, the test error was 1.94270326937 and auc was 0.596826458288
+At iteration 27000, the test error was 1.92019682528 and auc was 0.603359310424
+At iteration 28000, the test error was 1.89868635913 and auc was 0.62074339542
+At iteration 29000, the test error was 1.89173454626 and auc was 0.607531879073
+At iteration 30000, the test error was 1.88010521253 and auc was 0.608438626589
+At iteration 31000, the test error was 1.85344278668 and auc was 0.650314209601
+At iteration 32000, the test error was 1.83190651014 and auc was 0.651004845229
+At iteration 33000, the test error was 1.81242558037 and auc was 0.651592541845
+At iteration 34000, the test error was 1.80169037348 and auc was 0.649929198045
+At iteration 35000, the test error was 1.78779366188 and auc was 0.652248527888
+At iteration 36000, the test error was 1.76656593698 and auc was 0.656358265169
+At iteration 37000, the test error was 1.75420103146 and auc was 0.629687263711
+At iteration 38000, the test error was 1.72872032487 and auc was 0.664338804056
+At iteration 39000, the test error was 1.71053687084 and auc was 0.670232299038
+At iteration 40000, the test error was 1.69640732704 and auc was 0.668706280029
+At iteration 41000, the test error was 1.67218913866 and auc was 0.671891431035
+At iteration 42000, the test error was 1.66447438204 and auc was 0.666862938506
+At iteration 43000, the test error was 1.63340983857 and auc was 0.668068141842
+** todos
+- wrapper around theano functions
+- max auc saving utilities
+- graphing etc... utilities
