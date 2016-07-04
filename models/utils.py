@@ -17,3 +17,15 @@ def create_shared_variable(initializer, shape):
     init = initializer()
     shared_var = theano.shared(init.sample(shape).astype(fX))
     return shared_var
+
+
+def reduce_with_method(classes, method_name, initial_value):
+    accum_value = initial_value
+    for cls in classes:
+        accum_value = cls.__getattribute__(method_name)(accum_value)
+        
+    return accum_value
+
+
+def get_params(layers):
+    return [param for lyr in layers for param in lyr.params]

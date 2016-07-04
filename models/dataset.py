@@ -11,9 +11,27 @@ DATA_DIR = '../data/assistments'
 train_file = os.path.join(DATA_DIR, 'builder_train.csv')
 test_file = os.path.join(DATA_DIR, 'builder_test.csv')
 
-params = du.AttrDict(
-    num_problems=140,
-)
+
+def to_one_hot(index_sequence, params):
+    array = np.zeros((index_sequence.shape[0], params.num_problems))
+    for row, col in enumerate(index_sequence):
+        array[row, col] = 1
+
+    return array.astype(np.int32)
+
+
+def pad_arrays(arrays, lengths):
+    max_len = max(lengths)
+
+    padded_arrays = []
+    for arr, length in zip(arrays, lengths):
+        npad = ((0,0), (0, max_len-length), (0,0))
+        padded_arrays.append(np.pad(arr,
+                                    pad_width=npad,
+                                    mode='constant',
+                                    constant_values=0))
+
+    return np.concatenate(padded_arrays)
 
 
 def generate_embeddings(size):
@@ -42,10 +60,18 @@ def read_csv(file_name):
     return zip(problems, answers)
 
 
+def combine_representations(problem_array, answer_array, params):
+    def expand(prob, is_corr):
+        return prob + is_corr*params.num_problems
+    
+    return np.array(map(expand, problem_array, answer_array))
+
+
+
 class Data(object):
     def __init__(self, params):
         self.params = params
-        self.embedding = generate_embeddings(params.num_problems*2)
+        self.embedding = generate_embeddings(self.params.num_problems*2)
 
     def initial_rows(self):
         train_data = read_csv(train_file)
@@ -56,13 +82,9 @@ class Data(object):
         def add_datamaps(input_data, is_test=False):
             datamaps = []
             for problem_array, answer_array in input_data:
-                expand = lambda prob, is_corr: prob + is_corr*params.num_problems
-                combined_representation = np.array(map(expand, problem_array, answer_array))
-                
                 datamaps.append(
                     {"problems": np.array(problem_array).astype(np.int32),
                      "is_correct": np.array(answer_array).astype(np.int32),
-                     "combined_representation": combined_representation.astype(np.int32),
                      "is_test": is_test}
                 )
                 
@@ -74,19 +96,6 @@ class Data(object):
     def dataset(self, is_test=False):
         rows = self.initial_rows()
         ds = du.dataset.from_list(rows)
-
-        ds = ds.map(
-            key='combined_representation',
-            fn=len,
-            out='length',
-        ).map(
-            key='combined_representation',
-            fn=lambda indices: lookup_embedding(indices, self.embedding),
-            out='x',
-        ).filter(
-            key='length',
-            fn=lambda x: x >= 2,
-        )
 
         if is_test:
             ds = ds.filter(
@@ -100,4 +109,52 @@ class Data(object):
                 fn=lambda x: not x,
             ).random_sample()
 
+
+        ds = ds.map(
+            key='problems',
+            fn=len,
+            out='length',
+        ).filter(
+            key='length',
+            fn=lambda x: x >= 2,
+        ).map(
+            key=['problems', 'is_correct'],
+            fn=lambda p, c: combine_representations(p, c, self.params),
+            out='combined_representation',
+        ).map(
+            key='combined_representation',
+            fn=lambda indices: lookup_embedding(indices, self.embedding),
+            out='x',
+        ).map(
+            key='problems',
+            fn=lambda arr: to_one_hot(arr, self.params),
+            out='mask',
+        ).map_key(
+            key='is_correct',
+            fn=lambda x: x[1:],
+        ).map_key(
+            key='x',
+            fn=lambda x: x[:-1][np.newaxis],
+        ).map_key(
+            key='mask',
+            fn=lambda x: x[1:][np.newaxis],
+        ).chunk(
+            chunk_size=self.params.batch_size,
+        ).map_key(
+            key='is_correct',
+            fn=np.concatenate,
+        ).map(
+            key=['x', 'length'],
+            fn=pad_arrays,
+            out='x',
+        ).map(
+            key=['mask', 'length'],
+            fn=pad_arrays,
+            out='mask',
+        ).map_key(
+            key='mask',
+            fn=lambda x: x.reshape(-1, self.params.num_problems)
+        )
+
+        
         return ds

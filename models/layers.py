@@ -11,8 +11,6 @@ LETTER_TO_LAYER = {
     'd': Dense,
 }
 
-
-
 class Recurrent(object):
     def __init__(self,
                  num_input,
